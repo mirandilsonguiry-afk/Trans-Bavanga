@@ -1,0 +1,811 @@
+<!-- mototaxista.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mototaxista | Trans Mobilidade Bavanga</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Menu (mesmo estilo do cliente) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .profile-photo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fff, #888);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 40px;
+            color: #000;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #fff;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+            padding-left: 30px;
+        }
+
+        .menu-item i {
+            width: 25px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .logo-small {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-small .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #fff, #888);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .status-online {
+            background: #00c853;
+            color: white;
+        }
+
+        .status-offline {
+            background: #666;
+            color: white;
+        }
+
+        .notif-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: #ff4444;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .corrida-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .corrida-info {
+            margin-bottom: 10px;
+        }
+
+        .corrida-info i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .btn-aceitar {
+            width: 100%;
+            padding: 12px;
+            background: #00c853;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-aceitar:hover {
+            transform: scale(1.02);
+            background: #00e660;
+        }
+
+        .btn-finalizar {
+            width: 100%;
+            padding: 12px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ganho-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .ganho-valor {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00c853;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: black;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                gap: 5px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="profile-photo" id="profilePhoto">
+                <i class="fas fa-motorcycle"></i>
+            </div>
+            <h3 id="userName">Carregando...</h3>
+            <p id="userPhone"></p>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="showTab('dashboard')">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="showTab('historico')">
+                <i class="fas fa-history"></i> <span>Histórico</span>
+            </div>
+            <div class="menu-item" onclick="showTab('ganhos')">
+                <i class="fas fa-money-bill-wave"></i> <span>Ganhos</span>
+            </div>
+            <div class="menu-item" onclick="showTab('perfil')">
+                <i class="fas fa-user-circle"></i> <span>Meu Perfil</span>
+            </div>
+            <div class="menu-item" onclick="showNotificacoes()">
+                <i class="fas fa-bell"></i> <span>Notificações</span>
+                <span class="notif-badge" id="notifBadge">0</span>
+            </div>
+            <div class="menu-item" onclick="showAjuda()">
+                <i class="fas fa-question-circle"></i> <span>Ajuda</span>
+            </div>
+            <div class="menu-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="menu-icon" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo-small">
+            <div class="logo-icon">
+                <i class="fas fa-motorcycle"></i>
+            </div>
+            <span>Trans Mobilidade</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <div class="status-badge status-offline" id="statusBtn" onclick="toggleStatus()">
+                <i class="fas fa-circle"></i> Offline
+            </div>
+            <div class="notif-icon" onclick="showNotificacoes()">
+                <i class="fas fa-bell"></i>
+                <span class="notif-badge" id="topNotifBadge">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="tabs">
+            <div class="tab active" data-tab="dashboard">Corridas Pendentes</div>
+            <div class="tab" data-tab="ativas">Corridas Ativas</div>
+            <div class="tab" data-tab="historico">Histórico</div>
+            <div class="tab" data-tab="ganhos">Meus Ganhos</div>
+        </div>
+
+        <!-- Dashboard - Corridas Pendentes -->
+        <div class="tab-content active" id="tab-dashboard">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-clock"></i> Corridas Disponíveis
+                </div>
+                <div id="corridasPendentesList"></div>
+            </div>
+        </div>
+
+        <!-- Corridas Ativas -->
+        <div class="tab-content" id="tab-ativas">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-play-circle"></i> Corrida em Andamento
+                </div>
+                <div id="corridaAtivaContent"></div>
+            </div>
+        </div>
+
+        <!-- Histórico -->
+        <div class="tab-content" id="tab-historico">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-history"></i> Corridas Realizadas
+                </div>
+                <div id="historicoList"></div>
+            </div>
+        </div>
+
+        <!-- Ganhos -->
+        <div class="tab-content" id="tab-ganhos">
+            <div class="card ganho-card">
+                <div class="ganho-valor" id="ganhoTotal">0 Kz</div>
+                <div>Total de Ganhos</div>
+            </div>
+            <div class="stats-grid" id="ganhosStats"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let statusOnline = false;
+        let currentCorridaAtiva = null;
+
+        function init() {
+            checkAuth();
+            loadUserData();
+            loadCorridasPendentes();
+            loadCorridaAtiva();
+            loadHistorico();
+            loadGanhos();
+            loadNotificacoes();
+            setupEventListeners();
+            
+            // Verificar novas corridas a cada 10 segundos
+            setInterval(() => {
+                if (statusOnline) {
+                    loadCorridasPendentes();
+                }
+            }, 10000);
+        }
+
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = JSON.parse(user);
+            if (currentUser.tipo !== 'mototaxista') {
+                if (currentUser.tipo === 'cliente') window.location.href = 'cliente.html';
+                else if (currentUser.tipo === 'gerente') window.location.href = 'gerente.html';
+            }
+            
+            statusOnline = currentUser.status === 'online';
+            if (statusOnline) {
+                document.getElementById('statusBtn').className = 'status-badge status-online';
+                document.getElementById('statusBtn').innerHTML = '<i class="fas fa-circle"></i> Online';
+            }
+        }
+
+        function loadUserData() {
+            document.getElementById('userName').textContent = currentUser.nome;
+            document.getElementById('userPhone').textContent = currentUser.telefone;
+        }
+
+        function toggleStatus() {
+            statusOnline = !statusOnline;
+            const users = JSON.parse(localStorage.getItem('users'));
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].status = statusOnline ? 'online' : 'offline';
+                localStorage.setItem('users', JSON.stringify(users));
+                currentUser = users[userIndex];
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+            
+            if (statusOnline) {
+                document.getElementById('statusBtn').className = 'status-badge status-online';
+                document.getElementById('statusBtn').innerHTML = '<i class="fas fa-circle"></i> Online';
+                loadCorridasPendentes();
+            } else {
+                document.getElementById('statusBtn').className = 'status-badge status-offline';
+                document.getElementById('statusBtn').innerHTML = '<i class="fas fa-circle"></i> Offline';
+            }
+        }
+
+        function loadCorridasPendentes() {
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const pendentes = corridas.filter(c => c.status === 'pendente' && !c.mototaxistaId);
+            
+            const container = document.getElementById('corridasPendentesList');
+            
+            if (!statusOnline) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.5;">🔴 Você está offline. Ative o status para receber corridas.</p>';
+                return;
+            }
+            
+            if (pendentes.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.5;">Nenhuma corrida disponível no momento</p>';
+                return;
+            }
+            
+            container.innerHTML = pendentes.map(corrida => `
+                <div class="corrida-item">
+                    <div class="corrida-info">
+                        <i class="fas fa-user"></i> ${corrida.clienteNome}<br>
+                        <i class="fas fa-map-marker-alt"></i> Origem: ${corrida.origem}<br>
+                        <i class="fas fa-flag-checkered"></i> Destino: ${corrida.destino}<br>
+                        <i class="fas fa-money-bill"></i> Valor: ${corrida.preco} Kz
+                    </div>
+                    <button class="btn-aceitar" onclick="aceitarCorrida('${corrida.id}')">
+                        <i class="fas fa-check-circle"></i> Aceitar Corrida
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function aceitarCorrida(corridaId) {
+            if (!statusOnline) {
+                alert("Você precisa estar online para aceitar corridas!");
+                return;
+            }
+            
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const corridaIndex = corridas.findIndex(c => c.id === corridaId);
+            
+            if (corridaIndex !== -1 && corridas[corridaIndex].status === 'pendente') {
+                corridas[corridaIndex].status = 'ativa';
+                corridas[corridaIndex].mototaxistaId = currentUser.id;
+                corridas[corridaIndex].mototaxistaNome = currentUser.nome;
+                localStorage.setItem('corridas', JSON.stringify(corridas));
+                
+                // Notificar cliente
+                const notificacao = {
+                    id: Date.now().toString(),
+                    usuarioId: corridas[corridaIndex].clienteId,
+                    titulo: 'Corrida Aceita',
+                    mensagem: `${currentUser.nome} aceitou sua corrida! O mototaxista está a caminho.`,
+                    data: new Date().toISOString(),
+                    lida: false
+                };
+                const notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
+                notificacoes.push(notificacao);
+                localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+                
+                alert("Corrida aceita com sucesso!");
+                loadCorridasPendentes();
+                loadCorridaAtiva();
+            }
+        }
+
+        function loadCorridaAtiva() {
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const ativa = corridas.find(c => c.mototaxistaId === currentUser.id && c.status === 'ativa');
+            currentCorridaAtiva = ativa;
+            
+            const container = document.getElementById('corridaAtivaContent');
+            
+            if (!ativa) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.5;">Nenhuma corrida ativa no momento</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="corrida-item">
+                    <div class="corrida-info">
+                        <i class="fas fa-user"></i> Cliente: ${ativa.clienteNome}<br>
+                        <i class="fas fa-map-marker-alt"></i> Origem: ${ativa.origem}<br>
+                        <i class="fas fa-flag-checkered"></i> Destino: ${ativa.destino}<br>
+                        <i class="fas fa-money-bill"></i> Valor: ${ativa.preco} Kz<br>
+                        <i class="fas fa-clock"></i> Solicitada em: ${new Date(ativa.data).toLocaleString()}
+                    </div>
+                    <button class="btn-finalizar" onclick="finalizarCorrida()">
+                        <i class="fas fa-check-double"></i> Finalizar Corrida
+                    </button>
+                </div>
+            `;
+        }
+
+        function finalizarCorrida() {
+            if (!currentCorridaAtiva) return;
+            
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const corridaIndex = corridas.findIndex(c => c.id === currentCorridaAtiva.id);
+            
+            if (corridaIndex !== -1) {
+                corridas[corridaIndex].status = 'concluida';
+                corridas[corridaIndex].dataConclusao = new Date().toISOString();
+                localStorage.setItem('corridas', JSON.stringify(corridas));
+                
+                // Notificar cliente
+                const notificacao = {
+                    id: Date.now().toString(),
+                    usuarioId: corridas[corridaIndex].clienteId,
+                    titulo: 'Corrida Concluída',
+                    mensagem: `Sua corrida foi concluída! Por favor, avalie o serviço.`,
+                    data: new Date().toISOString(),
+                    lida: false
+                };
+                const notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
+                notificacoes.push(notificacao);
+                localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+                
+                alert("Corrida finalizada com sucesso!");
+                loadCorridaAtiva();
+                loadHistorico();
+                loadGanhos();
+                loadCorridasPendentes();
+            }
+        }
+
+        function loadHistorico() {
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const minhasCorridas = corridas.filter(c => c.mototaxistaId === currentUser.id && c.status === 'concluida');
+            
+            const container = document.getElementById('historicoList');
+            if (minhasCorridas.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.5;">Nenhuma corrida realizada</p>';
+                return;
+            }
+            
+            container.innerHTML = minhasCorridas.map(corrida => `
+                <div class="corrida-item">
+                    <div class="corrida-info">
+                        <i class="fas fa-user"></i> ${corrida.clienteNome}<br>
+                        <i class="fas fa-map-marker-alt"></i> ${corrida.origem} → ${corrida.destino}<br>
+                        <i class="fas fa-money-bill"></i> ${corrida.preco} Kz<br>
+                        <small>${new Date(corrida.dataConclusao || corrida.data).toLocaleString()}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadGanhos() {
+            const corridas = JSON.parse(localStorage.getItem('corridas')) || [];
+            const minhasCorridas = corridas.filter(c => c.mototaxistaId === currentUser.id && c.status === 'concluida');
+            
+            const total = minhasCorridas.reduce((sum, c) => sum + c.preco, 0);
+            document.getElementById('ganhoTotal').innerHTML = `${total} Kz`;
+            
+            // Estatísticas por período
+            const hoje = new Date().toDateString();
+            const hojeCorridas = minhasCorridas.filter(c => new Date(c.dataConclusao || c.data).toDateString() === hoje);
+            const hojeTotal = hojeCorridas.reduce((sum, c) => sum + c.preco, 0);
+            
+            const thisWeek = new Date();
+            thisWeek.setDate(thisWeek.getDate() - 7);
+            const semanaCorridas = minhasCorridas.filter(c => new Date(c.dataConclusao || c.data) >= thisWeek);
+            const semanaTotal = semanaCorridas.reduce((sum, c) => sum + c.preco, 0);
+            
+            document.getElementById('ganhosStats').innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${hojeCorridas.length}</div>
+                    <div class="stat-label">Corridas Hoje</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${hojeTotal} Kz</div>
+                    <div class="stat-label">Faturamento Hoje</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${semanaCorridas.length}</div>
+                    <div class="stat-label">Corridas na Semana</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${semanaTotal} Kz</div>
+                    <div class="stat-label">Faturamento na Semana</div>
+                </div>
+            `;
+        }
+
+        function loadNotificacoes() {
+            const notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
+            const minhasNotificacoes = notificacoes.filter(n => n.usuarioId === currentUser.id && !n.lida);
+            const count = minhasNotificacoes.length;
+            document.getElementById('notifBadge').textContent = count;
+            document.getElementById('topNotifBadge').textContent = count;
+        }
+
+        function showNotificacoes() {
+            const notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
+            const minhasNotificacoes = notificacoes.filter(n => n.usuarioId === currentUser.id);
+            
+            minhasNotificacoes.forEach(n => n.lida = true);
+            localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+            loadNotificacoes();
+            
+            if (minhasNotificacoes.length === 0) {
+                alert("Nenhuma notificação");
+            } else {
+                let msg = "📢 NOTIFICAÇÕES:\n\n";
+                minhasNotificacoes.forEach(n => {
+                    msg += `📌 ${n.titulo}\n   ${n.mensagem}\n   ${new Date(n.data).toLocaleString()}\n\n`;
+                });
+                alert(msg);
+            }
+        }
+
+        function showAjuda() {
+            alert("🚀 AJUDA - MOTOTAXISTA\n\n" +
+                  "📌 Como funciona:\n" +
+                  "1. Mantenha o status ONLINE para receber corridas\n" +
+                  "2. Aceite corridas disponíveis\n" +
+                  "3. Vá até o ponto de origem do cliente\n" +
+                  "4. Finalize a corrida após chegar ao destino\n" +
+                  "5. Acompanhe seus ganhos na aba 'Meus Ganhos'\n\n" +
+                  "📞 Suporte WhatsApp: https://wa.me/244941189839");
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    showTab(tabName);
+                });
+            });
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            if (tabName === 'dashboard') {
+                document.querySelector('.tab[data-tab="dashboard"]').classList.add('active');
+                document.getElementById('tab-dashboard').classList.add('active');
+                loadCorridasPendentes();
+            } else if (tabName === 'ativas') {
+                document.querySelector('.tab[data-tab="ativas"]').classList.add('active');
+                document.getElementById('tab-ativas').classList.add('active');
+                loadCorridaAtiva();
+            } else if (tabName === 'historico') {
+                document.querySelector('.tab[data-tab="historico"]').classList.add('active');
+                document.getElementById('tab-historico').classList.add('active');
+                loadHistorico();
+            } else if (tabName === 'ganhos') {
+                document.querySelector('.tab[data-tab="ganhos"]').classList.add('active');
+                document.getElementById('tab-ganhos').classList.add('active');
+                loadGanhos();
+            } else if (tabName === 'perfil') {
+                // Implementar perfil se necessário
+                alert("Funcionalidade em desenvolvimento");
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        init();
+    </script>
+</body>
+</html>

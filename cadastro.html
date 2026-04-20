@@ -1,0 +1,418 @@
+<!-- cadastro.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cadastro | Trans Mobilidade Bavanga</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ffffff, #888888);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            opacity: 0.6;
+            font-size: 12px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .user-type {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .type-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .type-option.selected {
+            background: rgba(255,255,255,0.15);
+            border-color: white;
+        }
+
+        .type-option i {
+            font-size: 30px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .type-option span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            opacity: 0.7;
+        }
+
+        .login-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.6;
+            font-size: 14px;
+        }
+
+        .back-home a:hover {
+            opacity: 1;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .alert-error {
+            background: rgba(255,68,68,0.2);
+            border: 1px solid #ff4444;
+            color: #ff8888;
+        }
+
+        .alert-success {
+            background: rgba(68,255,68,0.2);
+            border: 1px solid #44ff44;
+            color: #88ff88;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .type-option i {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-motorcycle"></i>
+            </div>
+            <h1>Trans Mobilidade</h1>
+            <p>BAVANGA.L</p>
+        </div>
+        
+        <h2>Criar Conta</h2>
+        
+        <div id="alert" class="alert"></div>
+        
+        <form id="registerForm">
+            <div class="user-type">
+                <div class="type-option selected" data-type="cliente">
+                    <i class="fas fa-user"></i>
+                    <span>Cliente</span>
+                </div>
+                <div class="type-option" data-type="mototaxista">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>Mototaxista</span>
+                </div>
+            </div>
+            
+            <input type="hidden" id="userType" value="cliente">
+            
+            <div class="input-group">
+                <label>Nome Completo</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="nome" placeholder="Seu nome completo" required>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Número de Telefone</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="telefone" placeholder="9XX XXX XXX" required>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Confirmar Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmarSenha" placeholder="Digite a senha novamente" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="register-btn">
+                <i class="fas fa-user-plus"></i> Cadastrar
+            </button>
+        </form>
+        
+        <div class="login-link">
+            Já tem uma conta? <a href="login.html">Faça login</a>
+        </div>
+        
+        <div class="back-home">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Voltar para Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Seleção de tipo de usuário
+        const typeOptions = document.querySelectorAll('.type-option');
+        const userTypeInput = document.getElementById('userType');
+        
+        typeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                typeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                userTypeInput.value = option.dataset.type;
+            });
+        });
+        
+        const registerForm = document.getElementById('registerForm');
+        const alertDiv = document.getElementById('alert');
+        
+        function showAlert(message, type) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            const tipo = userTypeInput.value;
+            
+            // Validações
+            if (!nome || !email || !telefone || !senha) {
+                showAlert('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+            
+            if (senha !== confirmarSenha) {
+                showAlert('As senhas não coincidem', 'error');
+                return;
+            }
+            
+            if (senha.length < 6) {
+                showAlert('A senha deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            if (!/^9[0-9]{8}$/.test(telefone)) {
+                showAlert('Número de telefone inválido (deve começar com 9 e ter 9 dígitos)', 'error');
+                return;
+            }
+            
+            // Verificar se usuário já existe
+            const users = JSON.parse(localStorage.getItem('users'));
+            const userExists = users.find(u => u.telefone === telefone);
+            
+            if (userExists) {
+                showAlert('Este número já está cadastrado', 'error');
+                return;
+            }
+            
+            // Criar novo usuário
+            const newUser = {
+                id: Date.now().toString(),
+                nome: nome,
+                email: email,
+                telefone: telefone,
+                senha: senha,
+                tipo: tipo,
+                foto: '',
+                dataCadastro: new Date().toISOString(),
+                status: tipo === 'mototaxista' ? 'offline' : 'ativo'
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            showAlert('Cadastro realizado com sucesso!', 'success');
+            
+            // Redirecionar para login
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
